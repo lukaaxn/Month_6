@@ -1,5 +1,11 @@
 from django.db.models import Avg
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Product, Category, Review
+from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, ReviewSerializer
+from .permissions import IsModerator
+
 @api_view(['GET'])
 def product_reviews_list_api_view(request):
     products = Product.objects.all()
@@ -17,11 +23,7 @@ def product_reviews_list_api_view(request):
             'rating': avg_rating
         })
     return Response(result)
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Product, Category, Review
-from .serializers import ProductSerializer, ProductDetailSerializer, CategorySerializer, ReviewSerializer
+
 @api_view(['GET', 'POST'])
 def category_list_api_view(request):
     if request.method == 'GET':
@@ -87,6 +89,7 @@ def review_detail_api_view(request, id):
         return Response(status=204)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsModerator])
 def product_detail_api_view(request, id):
     try:
         product = Product.objects.get(id=id)
@@ -107,6 +110,7 @@ def product_detail_api_view(request, id):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsModerator])
 def product_list_api_view(request):
     if request.method == 'GET':
         product = Product.objects.all()
