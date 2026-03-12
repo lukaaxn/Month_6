@@ -28,9 +28,8 @@ def confirm_user(request):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             return Response({'error': 'Пользователь не найден.'}, status=status.HTTP_404_NOT_FOUND)
-        if user.confirmation_code == code:
+        if user.check_confirmation_code(code):
             user.is_active = True
-            user.confirmation_code = None
             user.save()
             return Response({'message': 'Пользователь подтверждён.'}, status=status.HTTP_200_OK)
         else:

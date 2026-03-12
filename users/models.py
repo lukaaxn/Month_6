@@ -1,3 +1,8 @@
+import redis
+from django.conf import settings
+
+def get_redis_client():
+    return redis.Redis(host=getattr(settings, 'REDIS_HOST', 'localhost'), port=getattr(settings, 'REDIS_PORT', 6379), db=0)
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 import random
@@ -39,6 +44,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def generate_confirmation_code(self):
         code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
-        self.confirmation_code = code
-        self.save()
+        r = get_redis_client()
+        r.set(f'confirmation_code:{self.email}', code, ex=300)  # 5 минут
         return code
+
+    def check_confirmation_code(self, code):
+        r = get_redis_client()
+        stored_code = r.get(f'confirmation_code:{self.email}')
+        if stored_code and stored_code.decode() == code:
+            r.delete(f'confirmation_code:{self.email}')
+            return True
+        return False
