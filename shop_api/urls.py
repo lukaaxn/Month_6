@@ -30,6 +30,7 @@ from django.contrib import admin
 from django.urls import path
 from product import views
 from users import views as user_views
+from users.google_oauth import google_oauth_callback
 
 from users.views import CustomTokenObtainPairView
 from rest_framework import permissions
@@ -50,4 +51,5 @@ urlpatterns = [
     path('api/v1/users/login/', user_views.login_user),
     path('api/v1/users/confirm/', user_views.confirm_user),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+        path('api/v1/oauth/google/', google_oauth_callback, name='google_oauth_callback'),
 ]

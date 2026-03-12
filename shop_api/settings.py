@@ -20,6 +20,11 @@ read_dotenv(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Google OAuth
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
+
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
