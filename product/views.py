@@ -117,6 +117,13 @@ def product_list_api_view(request):
         data = ProductSerializer(instance=product, many=True).data
         return Response(status=status.HTTP_200_OK, data=data)
     elif request.method == 'POST':
+        # Получаем birthdate из JWT-токена
+        token_birthdate = request.auth.get('birthdate') if request.auth else None
+        from common.validators import validate_user_age_from_token
+        try:
+            validate_user_age_from_token(token_birthdate)
+        except Exception as e:
+            return Response({'error': str(e)}, status=400)
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

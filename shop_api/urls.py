@@ -30,6 +30,8 @@ from django.contrib import admin
 from django.urls import path
 from product import views
 from users import views as user_views
+
+from users.views import CustomTokenObtainPairView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -38,6 +40,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/categories/', views.category_list_api_view),
     path('api/v1/categories/<int:id>/', views.category_detail_api_view),
+    path('api/v1/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/v1/products/', views.product_list_api_view),
     path('api/v1/products/<int:id>/', views.product_detail_api_view),
     path('api/v1/products/reviews/', views.product_reviews_list_api_view),
