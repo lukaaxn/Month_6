@@ -138,3 +138,6 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+
+# Celery
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
